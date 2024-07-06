@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 
 
-
+//signup function come from auth.route
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -23,8 +23,7 @@ export const signup = async (req, res, next) => {
 
 
 
-
-
+//sigin function come from auth.route
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -48,7 +47,7 @@ export const signin = async (req, res, next) => {
 
 
 
-
+//google function come from auth.route
 export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -80,6 +79,18 @@ export const google = async (req, res, next) => {
         .status(200)
         .json(rest);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+//signout function come from auth.route
+export const signOut = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json('User has been logged out!');
   } catch (error) {
     next(error);
   }
