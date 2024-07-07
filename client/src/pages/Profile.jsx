@@ -57,7 +57,7 @@ export default function Profile() {
 
 
 
-  //User picture upload and upadte function
+ //handleFileUpload function to handle updated user image
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
