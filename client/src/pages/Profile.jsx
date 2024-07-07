@@ -1,12 +1,12 @@
-import { useSelector } from 'react-redux';
-import { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';                  // Importing the useSelector hook from react-redux
+import { useRef, useState, useEffect } from 'react';        // Importing useRef, useState, and useEffect hooks from react
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
-} from 'firebase/storage';
-import { app } from '../firebase';
+} from 'firebase/storage';                                  // Importing Firebase storage functions
+import { app } from '../firebase';                          // Importing Firebase app configuration
 import {
   updateUserStart,
   updateUserSuccess,
@@ -17,14 +17,15 @@ import {
   signOutUserStart,
 } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 
 
 
 export default function Profile() {
-  const fileRef = useRef(null);
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const fileRef = useRef(null);                                                    // Creating a reference for the file input
+  const { currentUser, loading, error } = useSelector((state) => state.user);      // Selecting current user, loading, and error state from Redux
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -43,6 +44,9 @@ export default function Profile() {
 
 
 
+
+
+// useEffect hook to handle file upload whenever the file state changes
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -57,7 +61,7 @@ export default function Profile() {
 
 
 
- //handleFileUpload function to handle updated user image
+  // Function to handle file upload to Firebase storage
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
@@ -68,8 +72,8 @@ export default function Profile() {
       'state_changed',
       (snapshot) => {
         const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFilePerc(Math.round(progress));
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;            // Calculate upload progress
+        setFilePerc(Math.round(progress));                                    // Update file upload progress state
       },
       (error) => {
         setFileUploadError(true);
@@ -87,11 +91,13 @@ export default function Profile() {
 
 
 
-//handleChange function to handle updated information
+ // Function to handle changes in form input fields
 const handleChange = (e) => {
   setFormData({ ...formData, [e.target.id]: e.target.value });
 };
 
+
+ // Function to handle form submission for updating user information
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -101,9 +107,9 @@ const handleSubmit = async (e) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData),                                          // Send form data as JSON
     });
-    const data = await res.json();
+    const data = await res.json();                                             // Parse JSON response
     if (data.success === false) {
       dispatch(updateUserFailure(data.message));
       return;
@@ -121,7 +127,7 @@ const handleSubmit = async (e) => {
 
 
 
-//handledelete function to delete user information
+// Function to handle deleting user information
 const handleDeleteUser = async () => {
   try {
     dispatch(deleteUserStart());
@@ -142,7 +148,7 @@ const handleDeleteUser = async () => {
 
 
 
-//handleSignOut function to signout user profile
+  // Function to handle signing out the user
 const handleSignOut = async () => {
   try {
     dispatch(signOutUserStart());
@@ -212,9 +218,18 @@ const handleSignOut = async () => {
           className="border   p-3   rounded-lg"
         />
 
+        
         <button disabled={loading} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
              {loading ? 'Loading...' : 'Update'}
         </button>
+
+        <Link
+          className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
+          to={'/create-listing'}
+        >
+          Create Listing
+        </Link>
+
       </form>
 
       <div className="flex justify-between   mt-5 ">
